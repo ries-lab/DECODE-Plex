@@ -1,0 +1,9 @@
+﻿name: envname
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - cudatoolkit=11.8
+  - cudnn=8.4
+  - pip
+  - python=3.9

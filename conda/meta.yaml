@@ -1,0 +1,58 @@
+package:
+  name: decode
+  version: "1.0.0dev0"  # do not modify by hand; set and sync with bumpversion
+
+source:
+     - path: ../..
+
+build:
+  noarch: python
+  number: 0
+
+requirements:
+  build:
+    - python {{ python }}
+    - setuptools
+
+  host:
+    - python {{ python }}
+    - numpy {{ numpy }}
+
+  run:
+    - python >=3.10,<4
+    - {{ pin_compatible('numpy', max_pin='x.x') }}
+    - pytorch=1.12
+    - pytorch-lightning
+    - click
+    - deprecated
+    - gitpython>=3.1
+    - h5py
+    - hypothesis
+    - importlib_resources
+    - matplotlib
+    - pandas
+    - pydantic
+    - pytest
+    - pyyaml
+    - requests
+    - scipy
+    - seaborn=0.10
+    - scikit-image
+    - scikit-learn
+    - spline=0.10.0
+    - tensorboard
+    - tifffile>=2021.1
+    - tqdm
+
+  test:
+    imports:
+      - decode
+    requires:
+      - pytest
+    commands:
+      - pytest -m "not (webbig or plot)" --pyargs decode
+
+about:
+    home: https://github.com/turagaLab/decode
+    summary: "High-Density 3D Single-Molecule Localisation Microscopy using Convolutional Neural Networks."
+    description: "Installation must add the respective channels for the dependencies (i.e. PyTorch and the spline package): ```conda install decode -c turagalab -c pytorch -c conda-forge```"
