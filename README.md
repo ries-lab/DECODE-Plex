@@ -100,7 +100,7 @@ Use the provided configuration files to train DECODE-Plex models for the corresp
 
 ### 3. Run Localization
 
-Run inference on the provided raw data or on your own SMLM movies. Raw input data should be placed in `./data`, and localization results should be written to `./outputs`.
+Run inference on the provided raw data or on your own SMLM movies. Raw input data should be placed in `./data`, and localization results should be written to `./results`.
 
 ### 4. Perform Channel Assignment
 
