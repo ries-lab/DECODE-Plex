@@ -27,7 +27,7 @@ We provide the materials needed to reproduce all figures in the manuscript, incl
 - raw data used for inference;
 - example scripts/notebooks for running localization and downstream analysis.
 
-Data access links will be added here: xxx
+Data access is here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20088010.svg)](https://doi.org/10.5281/zenodo.20088010)
 
 After downloading the repository, create the following folders in the project root:
 
@@ -40,6 +40,8 @@ Place the downloaded files into the corresponding folders:
 - `./data`: raw inference data and example datasets;
 - `./calibration`: calibrated PSFs and calibration-related files;
 - `./outputs`: trained models, localization results, intermediate outputs, and figure-reproduction results.
+
+Localization results inferred by DECODE-Plex are stored in `.h5` format and can be directly opened and further analyzed in [SMAP](https://doi.org/10.1038/s41592-020-0938-1). We provide all localization results associated with the manuscript figures in the `./results` directory.
 
 ## Installation
 
