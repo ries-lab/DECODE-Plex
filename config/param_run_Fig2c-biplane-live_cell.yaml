@@ -29,8 +29,11 @@ Camera:
         channel: -2
 
 Meta:
-  tag: Biplane
-  version: 240621_biplane
+  tag: experiments
+  version: Fig2c
+
+Model:
+  separate_ch: true
 
 Optimizer:
   lr: 0.0001

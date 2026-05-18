@@ -30,7 +30,10 @@ Camera:
 
 Meta:
   tag: experiments
-  version: 240802_NC_BeadCal_DualColor
+  version: Fig2b
+
+Model:
+  separate_ch: true
 
 Optimizer:
   lr: 0.0001

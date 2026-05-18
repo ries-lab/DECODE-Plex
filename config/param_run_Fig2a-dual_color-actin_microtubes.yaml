@@ -30,7 +30,10 @@ Camera:
 
 Meta:
   tag: experiments
-  version: 240802_NC_ER_MT_TritonX100_2percent_2
+  version: Fig2a
+
+Model:
+  separate_ch: true
 
 Optimizer:
   lr: 0.0001

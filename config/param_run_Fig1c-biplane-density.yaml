@@ -9,7 +9,10 @@ Camera:
       sensor_size: [ 512, 512 ]
 Meta:
   tag: Biplane
-  version: 240621_biplane
+  version: density
+
+Model:
+  separate_ch: true
 
 Optimizer:
   lr: 0.0001

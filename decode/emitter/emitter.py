@@ -1176,6 +1176,21 @@ class EmitterSet:
         em.populate_crlb_(psf, inversion=inversion, **kwargs)
         return em
 
+    def populate_fisher_(self, psf, **kwargs):
+        """
+        Populate the Fisher information values by the PSF function.
+
+        Args:
+            psf: Point Spread function with Fisher information implementation
+            **kwargs: additional arguments to be parsed to the Fisher information method
+
+        Returns:
+
+        """
+        fisher, _ = psf.fisher(self.xyz, self.phot/2, self.bg/2) # only for biplane data
+        return fisher
+
+    
     def populate_crlb_(self, psf, inversion: Optional[Callable] = None, **kwargs):
         """
         Populate the CRLB values by the PSF function.

@@ -100,7 +100,7 @@ Model:
   - 5
   - 5
   - 2
-  separate_ch: false
+  separate_ch: true
   separate_win: true
 Optimizer:
   name: AdamW

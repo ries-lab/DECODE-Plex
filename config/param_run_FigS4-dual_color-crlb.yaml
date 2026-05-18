@@ -9,14 +9,14 @@ Camera:
       sensor_size: [256, 256]
 
 Meta:
-  tag: CRLB_251030
-  version:
+  tag: dual_color
+  version: crlb
 
 Model:
   aux_shared: true
   aux_union: true
-  seperate_ch: true
-  seperate_win: true
+  separate_ch: true
+  separate_win: true
 
 Optimizer:
   lr: 0.0001

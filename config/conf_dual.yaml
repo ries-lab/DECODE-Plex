@@ -10,7 +10,7 @@ Model:
   backbone: SigmaMUNetv2
   aux_shared: true
   aux_union: true
-  separate_ch: false  # currently false seems to be better
+  separate_ch: true  # currently false seems to be better
 
 Simulation:
   bg:

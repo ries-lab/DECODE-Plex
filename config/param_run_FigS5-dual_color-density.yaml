@@ -29,8 +29,11 @@ Camera:
         channel: -2
 
 Meta:
-  tag: warm_start
-  version: 240802
+  tag: dual_color
+  version: density
+
+Model:
+  separate_ch: true
 
 Optimizer:
   lr: 0.0001
