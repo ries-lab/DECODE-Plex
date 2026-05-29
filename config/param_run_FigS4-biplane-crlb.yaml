@@ -2,32 +2,28 @@ Camera:
   - name: CameraPerfect
     specs:
       px_size: [100., 100.]
-      sensor_size: [256, 256]
+      sensor_size: [ 512, 512 ]
   - name: CameraPerfect
     specs:
       px_size: [100., 100.]
-      sensor_size: [256, 256]
-
+      sensor_size: [ 512, 512 ]
 Meta:
-  tag: dual_color
+  tag: Biplane
   version: crlb
 
 Model:
-  aux_shared: true
-  aux_union: true
   separate_ch: true
-  separate_win: true
+
 
 Optimizer:
   lr: 0.0001
 
 Paths:
   base: /home/shahao/projects/DECODE-Plex/
-  calibration: /home/shahao/projects/DECODE-Plex/calibration/FigS4-Pos0_231130_BeadsCal_Z_1_MMStack_Default.ome_updown_ul_normal_em_3dcal.mat
-  trafo: /home/shahao/projects/DECODE-Plex/calibration/FigS4-Pos0_231130_BeadsCal_Z_1_MMStack_Default.ome_updown_ul_normal_em_trafo.mat
+  calibration: /home/shahao/projects/DECODE-Plex/calibration/Fig1c_2c-Pos0_240621_NC_BeadCal_BifocalPlane_Z_1_MMStack_Default.ome_3dcal.mat
+  trafo: /home/shahao/projects/DECODE-Plex/calibration/Fig1c_2c-Pos0_240621_NC_BeadCal_BifocalPlane_Z_1_MMStack_Default.ome_trafo.mat
   experiment: /home/shahao/projects/DECODE-Plex/outputs/
   logging: /home/shahao/projects/DECODE-Plex/log/
-
 Simulation:
   bg:
     ### experimental
@@ -44,13 +40,11 @@ Simulation:
   Photon: # new style
     distribution:
       Uniform:
-        # low: [1000., 1000.]
-        # high: [3000., 4000.]
         low: [2000.]
         high: [8000.]
   PSF:
     CubicSpline:
-      channels_out: [0, 0] # necesasary, otherwise crlb computation is complicated
+      norm:
       flip:
         x: [false, false]
         y: [false, false]
@@ -67,22 +61,22 @@ Simulation:
           channel: 1
           frame_size: 512
         offset:
-          x: [0, -14]
-          y: [0, 0]
+          x: [0, 47]
+          y: [0, -13]
   emitter_avg: 3
 
 Target:
   filter:
-    phot: [1000., null]
-    # pre_agg: sum
+    phot: [100., null]
+    pre_agg: sum
     agg: all
 
 Trainer:
-  max_epochs: 600
   frame_window: 1
   batch_size: 32
+  max_epochs: 600
+
 
 defaults:
-  - conf_dual
-  - override Simulation/Transformation/Photon: halfed
+  - conf_biplane
   - _self_

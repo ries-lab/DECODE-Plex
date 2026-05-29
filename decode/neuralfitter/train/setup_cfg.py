@@ -817,12 +817,14 @@ def setup_frame_pre_single_channel():
 def setup_frame_pre_multi_roi(cfg, cfg_cam, device, scope, crop_to):
     
     path_trafo = cfg["Paths"]["trafo"]
-    path = path_trafo if isinstance(path_trafo, Path) else Path(path_trafo)
+    path = path_trafo if isinstance(path_trafo, Path) or path_trafo is None else Path(path_trafo)
     
     logger.info(
         "Setting up frame pre-processing in multi-roi mode, on a single camera."
     )
-    if path.suffix == ".mat" and cfg[scope]["Transformation"]["Pos"]["glob"]["offset"] is not None:
+    if path is None:
+        xy = None
+    elif path.suffix == ".mat" and cfg[scope]["Transformation"]["Pos"]["glob"]["offset"] is not None:
         offset = cfg[scope]["Transformation"]["Pos"]["glob"]["offset"]
         if not all([o[0] == 0 for o in offset.values()]):
             raise NotImplementedError(f"Channel 0 must not be offset. Got {offset}")
