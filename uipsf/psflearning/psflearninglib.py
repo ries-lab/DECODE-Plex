@@ -100,12 +100,43 @@ LOSSFUN_DICT_4pi = dict(voxel=mse_real_4pi,
                 insitu_zernike=mse_zernike_4pi_smlm)
 
             
+def _configure_gpu(gpu_id=None):
+    if gpu_id is None:
+        return
+
+    gpu_id = int(gpu_id)
+    gpus = tf.config.list_physical_devices("GPU")
+    if not gpus:
+        print(f"No TensorFlow GPU detected; requested gpu_id={gpu_id}")
+        return
+    if gpu_id >= len(gpus):
+        raise ValueError(
+            f"Requested gpu_id={gpu_id}, but TensorFlow only detected {len(gpus)} GPU(s)."
+        )
+
+    try:
+        tf.config.set_visible_devices(gpus[gpu_id], "GPU")
+        tf.config.experimental.set_memory_growth(gpus[gpu_id], True)
+        if not os.environ.get("CUDA_VISIBLE_DEVICES"):
+            os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    except RuntimeError as exc:
+        print(
+            "TensorFlow GPU visibility was already initialized; "
+            f"continuing with the existing GPU configuration. ({exc})"
+        )
+
 
 class psflearninglib:
     def __init__(self,param=None):
         self.param = param
         self.loc_FD = None
+        if param is not None:
+            self.configure_gpu()
 
+    def configure_gpu(self, gpu_id=None):
+        if gpu_id is None and self.param is not None:
+            gpu_id = self.param.get("gpu_id", None)
+        _configure_gpu(gpu_id)
 
 
     def getpsfclass(self):
@@ -142,6 +173,7 @@ class psflearninglib:
 
     def load_data(self,frange=None):
         param = self.param
+        self.configure_gpu()
         varname = param.varname
         format = param.format
         channeltype = param.channeltype
@@ -218,6 +250,7 @@ class psflearninglib:
 
     def prep_data(self,images):
         param = self.param
+        self.configure_gpu()
         peak_height = param.roi.peak_height
         roi_size = param.roi.roi_size
         gaus_sigma = param.roi.gauss_sigma
@@ -314,10 +347,12 @@ class psflearninglib:
     
     def learn_psf(self,dataobj,time=None):
         param = self.param
+        self.configure_gpu()
         rej_threshold = list(param.rej_threshold.values())
         maxiter = param.iteration
         w = list(param.loss_weight.values())
         usecuda = param.usecuda
+        gpu_id = param.get("gpu_id", None)
         showplot = param.plotall
         optionparam = param.option
         channeltype = param.channeltype
@@ -402,7 +437,7 @@ class psflearninglib:
             res, toc = fitter.learn_psf(start_time=time)
         
         if len(file_idxs)==1:
-            locres = fitter.localize(res,channeltype,usecuda=usecuda,plot=showplot,start_time=toc)
+            locres = fitter.localize(res,channeltype,usecuda=usecuda,gpu_id=gpu_id,plot=showplot,start_time=toc)
             res1 = res
         else:
              
@@ -410,13 +445,13 @@ class psflearninglib:
             if 'insitu' in PSFtype:
                 #th = [0.99,0.9] # quantile
                 res1,toc = fitter.relearn_smlm(res,channeltype,rej_threshold,start_time=toc)
-                locres = fitter.localize_smlm(res1,channeltype,plot=showplot)
+                locres = fitter.localize_smlm(res1,channeltype,gpu_id=gpu_id,plot=showplot)
             else:
-                locres = fitter.localize(res,channeltype,usecuda=usecuda,plot=showplot,start_time=toc)
+                locres = fitter.localize(res,channeltype,usecuda=usecuda,gpu_id=gpu_id,plot=showplot,start_time=toc)
                 toc = locres[-2]
                 res1, toc = fitter.relearn(res,channeltype,rej_threshold,start_time=toc)
                 if res1[0].shape[-2] < res[0].shape[-2]:
-                    locres = fitter.localize(res1,channeltype,usecuda=usecuda,plot=showplot,start_time=toc)
+                    locres = fitter.localize(res1,channeltype,usecuda=usecuda,gpu_id=gpu_id,plot=showplot,start_time=toc)
             
         self.learning_result = res1
         self.loc_result = locres
@@ -425,9 +460,10 @@ class psflearninglib:
     def localize_FD(self,fitter, initz=None):
         res = self.learning_result
         usecuda = self.param.usecuda
+        gpu_id = self.param.get("gpu_id", None)
         showplot = self.param.plotall
         channeltype = self.param.channeltype
-        loc_FD = fitter.localize_FD(res, channeltype, usecuda=usecuda, initz=initz,plot=showplot)
+        loc_FD = fitter.localize_FD(res, channeltype, usecuda=usecuda, gpu_id=gpu_id, initz=initz,plot=showplot)
         self.loc_FD = loc_FD
         return loc_FD
 

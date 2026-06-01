@@ -20,7 +20,7 @@ else:
         # as we can so that slight changes on colab do not break so fast
         # that's why we deviate from environment.yaml
         "torch",
-        "pytorch-lightning",
+        "pytorch-lightning>=1.8,<1.9",
         "click",
         "deprecated",
         "gitpython>=3.1",
@@ -33,7 +33,7 @@ else:
         "pyyaml",
         "requests",
         "scipy",
-        "seaborn==0.10",
+        "seaborn>=0.12,<0.14",
         "scikit-image",
         "scikit-learn",
         "tensorboard",

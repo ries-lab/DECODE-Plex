@@ -237,7 +237,7 @@ class Fitter(FitterInterface):
             toc = start_time
         return res, toc
 
-    def localize(self,res,channeltype,usecuda=True,initz=None, plot=True,start_time=None):
+    def localize(self,res,channeltype,usecuda=True,gpu_id=None,initz=None, plot=True,start_time=None):
         intensity = np.abs(np.squeeze(res[2],axis=(-1,-2)))
         if res[2].dtype == 'complex64':
             intensityR = intensity
@@ -248,7 +248,7 @@ class Fitter(FitterInterface):
         psf_data = self.rois
         pz = self.data.pixelsize_z
 
-        dll = localizationlib(usecuda=usecuda)
+        dll = localizationlib(usecuda=usecuda,gpu_id=gpu_id)
         if channeltype=='single':
             locres = dll.loc_ast(psf_data,I_model,pz,initz=initz,plot=plot,start_time=start_time)
             mydiff = psf_fit[:,1:-1]-psf_data[:,1:-1]
@@ -315,14 +315,14 @@ class Fitter(FitterInterface):
         self.minI = minI
         return locres
 
-    def localize_smlm(self,res,channeltype,usecuda=True,initz=None, plot=True):
+    def localize_smlm(self,res,channeltype,usecuda=True,gpu_id=None,initz=None, plot=True):
 
         I_model = res[3]
 
         psf_data = self.rois
         pz = self.data.pixelsize_z
 
-        dll = localizationlib(usecuda=usecuda)
+        dll = localizationlib(usecuda=usecuda,gpu_id=gpu_id)
         if channeltype=='single':
             locres = dll.loc_ast(psf_data,I_model,pz,initz=initz,plot=plot)
  
@@ -348,7 +348,7 @@ class Fitter(FitterInterface):
         return locres
 
     
-    def localize_FD(self,res, channeltype,usecuda=True,initz=None, plot=True):
+    def localize_FD(self,res, channeltype,usecuda=True,gpu_id=None,initz=None, plot=True):
         #res_dict = self.psf.res2dict(res)
         #I_model_all = res_dict['I_model_all']
         I_model_all = self.forward_images
@@ -360,7 +360,7 @@ class Fitter(FitterInterface):
             Nz = 1
         _, _, centers, _ = self.data.get_image_data()
         cor = np.stack(centers)
-        dll = localizationlib(usecuda=usecuda)
+        dll = localizationlib(usecuda=usecuda,gpu_id=gpu_id)
         x = []
         y = []
         z = []

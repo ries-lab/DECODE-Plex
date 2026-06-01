@@ -1,4 +1,7 @@
 import copy
+import contextlib
+import pathlib
+import sys
 from pathlib import Path
 from typing import Union
 
@@ -12,6 +15,20 @@ from ..neuralfitter.train import setup_cfg
 from ..utils import dev
 
 logger = get_logger(__name__)
+
+
+@contextlib.contextmanager
+def _patch_posix_path_unpickling_on_windows():
+    if not sys.platform.startswith("win"):
+        yield
+        return
+
+    posix_path = pathlib.PosixPath
+    pathlib.PosixPath = pathlib.WindowsPath
+    try:
+        yield
+    finally:
+        pathlib.PosixPath = posix_path
 
 
 @dev.experimental()
@@ -35,14 +52,15 @@ def load_model(
 
     model = setup_cfg.setup_model(cfg)
 
-    model_wrap = model_lightning.Model.load_from_checkpoint(
-        path_weights,
-        model=model,
-        proc_train=None,
-        proc_val=None,
-        batch_size=None,
-        map_location=device,
-    )
+    with _patch_posix_path_unpickling_on_windows():
+        model_wrap = model_lightning.Model.load_from_checkpoint(
+            path_weights,
+            model=model,
+            proc_train=None,
+            proc_val=None,
+            batch_size=None,
+            map_location=device,
+        )
 
     return model_wrap._model
 
@@ -70,14 +88,15 @@ def load_pipeline(
     proc_train = setup_cfg.setup_processor(cfg, cfg["Simulation"])
     proc_val = setup_cfg.setup_processor(cfg, cfg["Test"])
 
-    model_wrap = model_lightning.Model.load_from_checkpoint(
-        path_ckpt,
-        model=model,
-        proc_train=proc_train,
-        proc_val=proc_val,
-        batch_size=None,
-        map_location=device,
-    )
+    with _patch_posix_path_unpickling_on_windows():
+        model_wrap = model_lightning.Model.load_from_checkpoint(
+            path_ckpt,
+            model=model,
+            proc_train=proc_train,
+            proc_val=proc_val,
+            batch_size=None,
+            map_location=device,
+        )
 
     return model_wrap
 

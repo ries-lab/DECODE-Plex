@@ -14,12 +14,73 @@ from .utilities import psf2cspline_np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os
+import glob
+import importlib.util
+import site
 import sys
 import tensorflow as tf
 from psflearning import io
 #%%
+def _preload_linux_cuda11_runtime():
+    """Load pip-provided CUDA 11 runtime before uiPSF's CUDA 11 libraries."""
+    candidates = []
+    for base in site.getsitepackages() + [site.getusersitepackages()]:
+        candidates.extend(
+            glob.glob(
+                os.path.join(base, "nvidia", "cuda_runtime", "lib", "libcudart.so.11*")
+            )
+        )
+
+    spec = importlib.util.find_spec("nvidia.cuda_runtime")
+    if spec and spec.submodule_search_locations:
+        for base in spec.submodule_search_locations:
+            candidates.extend(
+                glob.glob(os.path.join(base, "lib", "libcudart.so.11*"))
+            )
+
+    attempted = []
+    for path in dict.fromkeys(candidates):
+        try:
+            attempted.append(path)
+            ctypes.CDLL(path, mode=ctypes.RTLD_GLOBAL)
+            return
+        except OSError:
+            pass
+
+    try:
+        ctypes.CDLL("libcudart.so.11.0", mode=ctypes.RTLD_GLOBAL)
+    except OSError:
+        attempted.append("libcudart.so.11.0")
+        raise OSError(
+            "Could not preload libcudart.so.11.0 for uiPSF. "
+            f"Tried: {attempted}"
+        )
+
+
+def _configure_tensorflow_visible_gpu(gpu_id=None):
+    if gpu_id is None:
+        return
+
+    gpu_id = int(gpu_id)
+    gpus = tf.config.list_physical_devices('GPU')
+    if not gpus:
+        return
+    if gpu_id >= len(gpus):
+        raise ValueError(
+            f"Requested gpu_id={gpu_id}, but TensorFlow only detected {len(gpus)} GPU(s)."
+        )
+    try:
+        tf.config.set_visible_devices(gpus[gpu_id], 'GPU')
+        tf.config.experimental.set_memory_growth(gpus[gpu_id], True)
+        if not os.environ.get("CUDA_VISIBLE_DEVICES"):
+            os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    except RuntimeError:
+        pass
+
+
 class localizationlib:
-    def __init__(self,usecuda=False):
+    def __init__(self,usecuda=False,gpu_id=None):
+        _configure_tensorflow_visible_gpu(gpu_id)
         thispath = os.path.dirname(os.path.abspath(__file__))
         pkgpath = os.path.dirname(os.path.dirname(thispath))
         cfg = io.param.load(pkgpath+'/config/path/config_path.yaml')
@@ -51,6 +112,7 @@ class localizationlib:
             dllpath_cpu_4pi = pkgpath+cfg.Paths.spline.linux.cpu.fpi
             dllpath_gpu_4pi = pkgpath+cfg.Paths.spline.linux.cuda.fpi
             if tf.config.list_physical_devices('GPU'):
+                _preload_linux_cuda11_runtime()
                 lib_gpu_astM = ctypes.CDLL(dllpath_gpu_astM)            
                 lib_gpu_4pi = ctypes.CDLL(dllpath_gpu_4pi)            
                 lib_gpu_ast = ctypes.CDLL(dllpath_gpu_ast)

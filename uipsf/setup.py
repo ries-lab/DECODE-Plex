@@ -1,6 +1,6 @@
 from setuptools import setup
 
-with open("README.md", "r") as f:
+with open("README.md", "r", encoding="utf-8") as f:
       long_descrition = f.read()
 
 setup(
@@ -37,8 +37,8 @@ setup(
             "numpy",
             "scipy",
             "matplotlib",
-            "tensorflow==2.9.1",
-            "tensorflow-probability==0.17",
+            "tensorflow>=2.10,<2.21",
+            "tensorflow-probability>=0.17,<0.26",
             "scikit-image",
             "tqdm",
             "czifile",
