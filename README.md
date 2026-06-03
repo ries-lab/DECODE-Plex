@@ -83,13 +83,29 @@ Windows PowerShell:
 New-Item -ItemType Directory -Force data, calibration, outputs, results
 ```
 
-Create and activate the conda environment:
+Create and activate the conda environment.
+
+Linux:
 
 ```bash
-conda config --set channel_priority flexible
 conda env create -f environment.yaml
 conda activate decode_plex
 ```
+
+Windows PowerShell:
+
+```bash
+mamba env create -f environment.yaml
+conda activate decode_plex
+```
+
+On Windows, we recommend `mamba` because it resolves the mixed `conda-forge`, `pytorch`, `nvidia`, and `haydnspass/label/dev` channels more reliably than the classic conda solver. If `mamba` is not installed, install it into the base environment first:
+
+```bash
+conda install -n base -c conda-forge mamba
+```
+
+Then run `mamba env create -f environment.yaml` from the DECODE-Plex repository root.
 
 Install DECODE-Plex in editable mode and register the notebook kernel:
 
