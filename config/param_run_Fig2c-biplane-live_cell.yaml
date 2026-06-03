@@ -75,6 +75,10 @@ Simulation:
           x: [0, 47]
           y: [0, -13]
 
+# Hardware:
+#   device:
+#     simulation: cpu
+
 Test:
   Transformation:
     Pos:

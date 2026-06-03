@@ -1,3 +1,0 @@
-main_data_dir:
-  /home/shahao/projects/uiPSF/data/ # main folder to your data, it is only useful if all your data are saved in one location, see demo notebooks.
-

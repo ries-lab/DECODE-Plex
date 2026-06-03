@@ -17,16 +17,16 @@ Paths:
 Simulation:
   bg:
     ### experimental
-    - uniform: [0,200]
-    - uniform: [0,200]
+    - uniform: [10.]
+    - uniform: [10.]
   emitter_extent:
     z: [ -600.0, 600.0 ]
   Photon: # new style
     distribution:
-      Uniform:
-        low: [0.]
-        high: [5000.]
-  lifetime_avg: 2.
+      Normal:
+        loc: [500.]
+        scale: [150.]
+  lifetime_avg: 1.
   PSF:
     CubicSpline:
       norm: [1., 1.]

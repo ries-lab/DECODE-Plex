@@ -46,6 +46,10 @@ Paths:
   logging: /home/shahao/projects/DECODE-Plex/log/
   # checkpoint_init: /home/shahao/projects/DECODE_Internal/outputs/experiments/2025-11-05_11-00-16-338942/epoch=149-step=93750.ckpt
 
+# Hardware:
+#   device:
+#     simulation: cpu
+
 Simulation:
   bg:
     ### experimental

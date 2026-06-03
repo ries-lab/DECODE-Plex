@@ -85,6 +85,10 @@ Test:
           x: [0, -29] # [0, -22]
           y: [0, -1] # [0, 1]
 
+# Hardware:
+#   device:
+#     simulation: cpu
+
 Target:
   filter:
     phot: [100., null]

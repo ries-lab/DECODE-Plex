@@ -85,6 +85,10 @@ Target:
     pre_agg: sum
     agg: all
 
+# Hardware:
+#   device:
+#     simulation: cpu
+
 Trainer:
   max_epochs: 1000
   frame_window: 3

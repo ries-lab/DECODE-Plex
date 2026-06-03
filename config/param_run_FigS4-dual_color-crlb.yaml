@@ -71,6 +71,10 @@ Simulation:
           y: [0, 0]
   emitter_avg: 3
 
+# Hardware:
+#   device:
+#     simulation: cpu
+
 Target:
   filter:
     phot: [1000., null]

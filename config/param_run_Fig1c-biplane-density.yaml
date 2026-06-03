@@ -54,6 +54,10 @@ Simulation:
           x: [0, 47]
           y: [0, -13]
 
+# Hardware:
+#   device:
+#     simulation: cpu
+
 Target:
   filter:
     phot: [100., null]

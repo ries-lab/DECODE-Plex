@@ -4,18 +4,18 @@ DECODE-Plex is a deep-learning-based framework for high-density single-molecule 
 
 This repository accompanies the DECODE-Plex manuscript and provides code, trained weights, configuration files, point spread functions (PSFs), and raw inference data required to reproduce the results reported in the paper.
 
-DECODE-Plex is built on [DECODE](https://doi.org/10.1038/s41592-021-01236-x), a DEep COntext DEpendent neural network for sub-pixel emitter localization, and uses experimentally calibrated PSF models such as those obtained with [SMAP](https://doi.org/10.1038/s41592-020-0938-1) or [uiPSF](https://doi.org/10.1038/s41592-024-02282-x).
+DECODE-Plex is built on [DECODE](https://doi.org/10.1038/s41592-021-01236-x), a DEep COntext DEpendent neural network for sub-pixel emitter localization. It uses experimentally calibrated PSF models as inputs, and calibrated PSFs required for reproducing the manuscript results are provided with the data release.
 
 ## Repository Contents
 
 The repository contains scripts and notebooks for the main stages of the DECODE-Plex workflow:
 
-1. PSF calibration and preparation.
+1. Prepare or select the provided calibrated PSF files.
 2. Model training with experiment-specific configuration files.
 3. Inference/localization using trained models.
 4. Channel assignment for dual-color datasets.
 
-Example workflows are provided in the `./notebook` directory. Please update the file paths in each notebook according to your local data layout before running the examples.
+Example workflows are provided in the `./notebook` directory. The main pipeline notebooks are `1_training.ipynb`, `2_inference.ipynb`, and `3_color_assignment.ipynb`. Please update the file paths in each notebook according to your local data layout before running the examples.
 
 ## Data and Reproducibility
 
@@ -29,21 +29,7 @@ We provide the materials needed to reproduce all figures in the manuscript, incl
 
 Data access is here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20088010.svg)](https://doi.org/10.5281/zenodo.20088010)
 
-After downloading the repository, create the following folders in the project root.
-
-Linux:
-
-```bash
-mkdir -p ./data ./calibration ./outputs ./results
-```
-
-Windows PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force data, calibration, outputs, results
-```
-
-Place the downloaded files into the corresponding folders:
+After downloading the repository, create the following folders in the project root. Place the downloaded files into the corresponding folders:
 
 - `./data`: raw inference movies and example datasets used as inputs by the notebooks;
 - `./calibration`: calibrated PSFs, transformation files, and other calibration-related files;
@@ -72,7 +58,6 @@ Only the GPU version of DECODE-Plex has been tested. For model training and high
 | Python   | 3.10 |
 | PyTorch  | 2.1.2 |
 | PyTorch CUDA runtime | 12.1 |
-| TensorFlow | 2.20.0 |
 
 
 ### Setup
@@ -106,47 +91,35 @@ conda env create -f environment.yaml
 conda activate decode_plex
 ```
 
-The environment file includes the third-party libraries needed by uiPSF. Installing the bundled uiPSF package in editable mode makes the local `uipsf` source importable from notebooks and scripts regardless of the current working directory.
-
-Install DECODE-Plex and the bundled uiPSF package in editable mode:
+Install DECODE-Plex in editable mode and register the notebook kernel:
 
 ```bash
 pip install -e .
-pip install -e ./uipsf
 python -m ipykernel install --user --name decode_plex --display-name "Python (decode_plex)"
 ```
 
-On Windows, if your shell does not accept the `./uipsf` path, use:
-
-```powershell
-pip install -e .\uipsf
-```
-
 ### Platform Notes
-
-We strongly recommend running and reproducing DECODE-Plex on Linux. Linux is the primary tested platform for this repository, especially for GPU-enabled workflows and uiPSF-based PSF fitting. Windows support is provided on a best-effort basis, but it has not been tested as thoroughly and may expose platform-specific issues in TensorFlow, CUDA libraries, or uiPSF native components.
-
-If unexpected uiPSF-related errors occur on Windows or another local setup, we recommend following the original [uiPSF](https://doi.org/10.1038/s41592-024-02282-x) installation and usage instructions to generate or fit the PSF model independently. The resulting calibrated PSF model can then be specified in the DECODE-Plex configuration files and used for training or inference.
+We strongly recommend running and reproducing DECODE-Plex on Linux. Linux is the primary tested platform for this repository, especially for GPU-enabled training and high-density inference. Windows support is provided on a best-effort basis, but it has not been tested as thoroughly and may expose platform-specific issues in CUDA or dependency resolution.
 
 ## Usage
 
 The typical DECODE-Plex workflow consists of the following steps.
 
-### 1. Prepare PSF Calibration Files
+### 1. Prepare Calibrated PSF Files
 
-Obtain or download the calibrated multi-channel PSFs and place them in `./calibration`. These PSFs are used to simulate training data and to model the optical response of the imaging system.
+Obtain or download the calibrated multi-channel PSFs and place them in `./calibration`. DECODE-Plex expects these calibrated PSF files to already exist. If you need to produce a new calibrated PSF, follow the original PSF calibration methods, such as [SMAP](https://doi.org/10.1038/s41592-020-0938-1) or  [uiPSF](https://doi.org/10.1038/s41592-024-02282-x), then specify the resulting PSF model path in the DECODE-Plex configuration file.
 
 ### 2. Train or Load a Model
 
-Use the provided configuration files to train DECODE-Plex models for the corresponding experimental conditions. For reproducing the manuscript figures, use the supplied trained weights and matching configuration files.
+Run `notebook/1_training.ipynb` or use the provided configuration files to train DECODE-Plex models for the corresponding experimental conditions. For reproducing the manuscript figures, use the supplied trained weights and matching configuration files.
 
 ### 3. Run Localization
 
-Run inference on the provided raw data or on your own SMLM movies. Raw input data should be placed in `./data`, and localization results should be written to `./results`.
+Run `notebook/2_inference.ipynb` on the provided raw data or on your own SMLM movies. Raw input data should be placed in `./data`, and localization results should be written to `./results`.
 
 ### 4. Perform Channel Assignment
 
-For dual-color experiments, run the channel-assignment workflow after localization to separate emitters by channel.
+For dual-color experiments, run `notebook/3_color_assignment.ipynb` after localization to separate emitters by channel.
 
 ## Paper
 
