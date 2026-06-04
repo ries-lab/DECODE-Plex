@@ -46,9 +46,7 @@ Only the GPU version of DECODE-Plex has been tested. For model training and high
 
 - GPU: NVIDIA GPU with CUDA support and at least 8 GB GPU memory
 - RAM: at least 16 GB
-- CPU: multi-core CPU recommended
 - OS: Linux or Windows
-- Package manager: conda or miniconda
 - Windows users: install the current NVIDIA display driver before creating the environment. The conda environment supplies the CUDA runtime used by PyTorch.
 
 ### Verified Environment
@@ -123,7 +121,27 @@ The typical DECODE-Plex workflow consists of the following steps.
 
 ### 1. Prepare Calibrated PSF Files
 
-Obtain or download the calibrated multi-channel PSFs and place them in `./calibration`. DECODE-Plex expects these calibrated PSF files to already exist. If you need to produce a new calibrated PSF, follow the original PSF calibration methods, such as [SMAP](https://doi.org/10.1038/s41592-020-0938-1) or  [uiPSF](https://doi.org/10.1038/s41592-024-02282-x), then specify the resulting PSF model path in the DECODE-Plex configuration file.
+Obtain or download the calibrated multi-channel PSFs and place them in `./calibration`. DECODE-Plex expects these calibrated PSF files to already exist. If you need to produce a new calibrated PSF, follow the original PSF calibration methods, such as [SMAP](https://doi.org/10.1038/s41592-020-0938-1) or [uiPSF](https://doi.org/10.1038/s41592-024-02282-x), then specify the resulting PSF model path in the DECODE-Plex configuration file.
+
+In our uiPSF fitting procedule, the PSF is first fitted from a bead stack, and then a sample-like PSF is generated to better simulate realistic imaging conditions. The PSF generation procedure follows the uiPSF demo:
+
+[![uiPSF demo_genPSF](https://img.shields.io/badge/uiPSF-demo__genPSF-blue)](https://github.com/ries-lab/uiPSF/blob/main/demo/demo_genPSF.ipynb)
+
+Because DECODE-Plex and the generated uiPSF model use different x-y coordinate conventions, apply the following conversion to the generated PSF before using it in DECODE-Plex:
+
+```python
+for channel in f_gen.res.keys():
+    if "channel" in channel:
+        f_gen.res[channel].I_model = np.flip(f_gen.res[channel].I_model, axis=0)
+        f_gen.res[channel].I_model = f_gen.res[channel].I_model.transpose(0, 2, 1)
+```
+
+You can inspect the fitted parameters from the provided uiPSF result files with:
+
+```python
+f, p = io.h5.load(resfile)
+print(p)
+```
 
 ### 2. Train or Load a Model
 
