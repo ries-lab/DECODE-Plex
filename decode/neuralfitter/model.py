@@ -155,7 +155,7 @@ class Model(pl.LightningModule):
         ix_tar = self._ix_tar
 
         if batch_ix == 2:  # graphic logging
-            ix = 8  # ix in batch
+            ix = min(8, x.size(0) - 1)  # ix in batch
             ix_ds = self.batch_size * batch_ix + ix  # ix in dataset
 
             em_tar_log = em_tar.iframe[ix_ds]

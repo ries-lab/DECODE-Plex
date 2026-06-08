@@ -3,6 +3,8 @@ import logging
 import os
 from pathlib import Path
 
+os.environ.setdefault("MPLBACKEND", "Agg")
+
 import hydra
 import omegaconf
 import pytorch_lightning as pl

@@ -1,3 +1,7 @@
+import os
+
+os.environ.setdefault("MPLBACKEND", "Agg")
+
 from decode.neuralfitter.train.train import train
 
 
