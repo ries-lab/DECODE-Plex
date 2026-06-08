@@ -10,7 +10,7 @@ Optimizer:
 
 Paths:
   base: /home/shahao/projects/DECODE-Plex/
-  calibration: /home/shahao/projects/DECODE-Plex/data/Fig1e-Challenge/sequence-Beads-BP-Exp-as-stack_3dcal_v7.mat
+  calibration: /home/shahao/projects/DECODE-Plex/calibration/Fig1e-sequence-Beads-BP-Exp-as-stack_3dcal_v7.mat
   trafo: null
   experiment: /home/shahao/projects/DECODE-Plex/outputs/
   logging: /home/shahao/projects/DECODE-Plex/log/
@@ -26,7 +26,7 @@ Simulation:
       Normal:
         loc: [500.]
         scale: [150.]
-  lifetime_avg: 1.
+  lifetime_avg: 2.
   PSF:
     CubicSpline:
       norm: [1., 1.]
