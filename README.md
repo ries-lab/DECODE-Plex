@@ -83,6 +83,8 @@ New-Item -ItemType Directory -Force data, calibration, outputs, results
 
 Create and activate the conda environment.
 
+We recommend [Miniforge](https://github.com/conda-forge/miniforge) as the installer for managing the DECODE-Plex environment. Miniforge uses the `conda-forge` channel by default and includes `mamba`, which is especially helpful on Windows for resolving the mixed `conda-forge`, `pytorch`, `nvidia`, and `haydnspass/label/dev` channels.
+
 Linux:
 
 ```bash
@@ -97,7 +99,7 @@ mamba env create -f environment.yaml
 conda activate decode_plex
 ```
 
-On Windows, we recommend `mamba` because it resolves the mixed `conda-forge`, `pytorch`, `nvidia`, and `haydnspass/label/dev` channels more reliably than the classic conda solver. If `mamba` is not installed, install it into the base environment first:
+If you already use Anaconda or Miniconda and `mamba` is not installed, install it into the base environment first:
 
 ```bash
 conda install -n base -c conda-forge mamba
