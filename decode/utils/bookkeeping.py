@@ -13,9 +13,10 @@ import decode
 
 
 def decode_state() -> str:
-    """Get version tag of decode. If in repo this will get you the output of git describe.
+    """Get version tag of decode.
 
-    Returns git describe, decode version or decode version with invalid appended.
+    If decode is imported from a git repository with tags, this returns the
+    output of ``git describe``. Otherwise it falls back to the package version.
     """
 
     p = Path(importlib.util.find_spec("decode").origin).parents[1]
@@ -29,6 +30,6 @@ def decode_state() -> str:
             return decode.__version__
 
         except git.exc.GitCommandError:
-            return "vINVALID-recent-" + decode.__version__
+            return decode.__version__
     else:
-        return "vINVALID-recent-" + decode.__version__
+        return decode.__version__
