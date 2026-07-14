@@ -27,7 +27,7 @@ We provide the materials needed to reproduce all figures in the manuscript, incl
 - raw data used for inference;
 - example scripts/notebooks for running localization and downstream analysis.
 
-Data access is here: [https://doi.org/10.5281/zenodo.20088010](https://doi.org/10.5281/zenodo.20088010)
+Data access is here: [https://zenodo.org/records/21348704](https://zenodo.org/records/21348704)
 
 After downloading the repository, create the following folders in the project root. Place the downloaded files into the corresponding folders:
 
